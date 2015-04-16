@@ -148,8 +148,6 @@ function parsePlayerData(id, content, done){
                         return cb("could not get player stats");
                     }
 
-                    console.log(matches.index);
-
                     data.stats.push({
                         year: matches[1],
                         team_url: matches[2],
@@ -220,15 +218,32 @@ function getTeamGGG(data, done){
                 'AHL' : 73.5 // sometimes 73, some 74
             };
 
+            stat.team_goals = parseInt(match[1]);
+            stat.team_assists = parseInt(match[2]);
+            stat.team_points = parseInt(match[3]);
+            stat.team_pims = parseInt(match[4]);
+
             if(gp[stat.team_league.toUpperCase()]){
-                stat.team_goals = parseInt(match[1]);
-                stat.team_assists = parseInt(match[2]);
-                stat.team_points = parseInt(match[3]);
-                stat.team_pims = parseInt(match[4]);
                 stat.team_ggg = stat.team_goals/gp[stat.team_league.toUpperCase()];
                 stat.ipp = stat.points / (stat.team_ggg * stat.games_played);
-            }else {
-                console.log("could not find stats for league", stat.team_leage);
+            } else {
+
+                var playerTeam = /<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?/g;
+
+                var maxGP = 0;
+                var matches;
+                while ((matches = playerTeam.exec(content)) !== null) {
+                    if (matches && matches.length > 1) {
+                        maxGP = Math.max(maxGP, parseInt(matches[1]));
+                    }
+                }
+
+                if (maxGP > 0) {
+                    stat.team_ggg = stat.team_goals/maxGP;
+                    stat.ipp = stat.points / (stat.team_ggg * stat.games_played);
+                } else {
+                    console.log("could not find stats for league", stat.team_league);
+                }
             }
 
             cb(null);
