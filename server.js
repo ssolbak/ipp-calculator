@@ -298,7 +298,7 @@ function calculateIPPInfo(data, done){
 
     var currentYear = draftYear -1;
 
-    var keys = ["draft-1","draft","draft1","draft2","draft3","draft4"];
+    var keys = ["draft-1","draft","draft1","draft2","draft3","draft4","draft5"];
 
     for(var i=0; i < keys.length; i++){
 

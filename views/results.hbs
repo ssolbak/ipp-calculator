@@ -8,7 +8,8 @@
 <table style="width: 100%">
     <thead class="main">
         <tr>
-            <td>Name</td><td>Drafted</td><td>Draft-1</td><td>Draft</td><td>Draft+1</td><td>Draft+2</td><td>Draft+3</td><td>Draft+4</td><td></td>
+            <td>Name</td><td>Drafted</td><td>Draft-1</td><td>Draft</td><td>Draft+1</td><td>Draft+2</td><td>Draft+3</td>
+            <td>Draft+4</td><td>Draft+5</td><td><!--delete--></td>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +25,7 @@
             <td class="pad">{{#if draft2}}{{> stat draft2}}{{/if}}</td>
             <td class="pad">{{#if draft3}}{{> stat draft3}}{{/if}}</td>
             <td class="pad">{{#if draft4}}{{> stat draft4}}{{/if}}</td>
+            <td class="pad">{{#if draft5}}{{> stat draft5}}{{/if}}</td>
             <td><a href="/delete/{{id}}">delete</a></td>
         </tr>
     {{/each}}
