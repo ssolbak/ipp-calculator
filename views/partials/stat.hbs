@@ -1,0 +1,15 @@
+<table>
+    <thead>
+        <tr>
+            <td>Year</td><td>League</td><td>GP</td><td>G</td><td>A</td><td>P</td><td>IPP</td></thead>
+        </tr>
+    <tbody>
+    {{#each this}}
+        <tr>
+        <td style="white-space: nowrap;">{{year year}}</td><td>{{team_league}}</td><td>{{games_played}}</td>
+        <td>{{goals}}</td><td>{{assists}}</td><td>{{points}}</td>
+        <td>{{percent ipp 2}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

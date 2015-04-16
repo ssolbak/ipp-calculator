@@ -1,0 +1,31 @@
+<p style="color: red">{{msg}}</p>
+
+
+{{#ifCond data.lenth '==' 0}}
+    <p>no data</p>
+{{/ifCond}}
+
+<table style="width: 100%">
+    <thead class="main">
+        <tr>
+            <td>Name</td><td>Drafted</td><td>Draft-1</td><td>Draft</td><td>Draft+1</td><td>Draft+2</td><td>Draft+3</td><td>Draft+4</td><td></td>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each data}}
+        <tr>
+            <td id="{{id}}" class="pad">
+                <a href="http://www.hockeydb.com/ihdb/stats/pdisplay.php?pid={{id}}" target="_blank">{{name}}</a>
+            </td>
+            <td class="pad">{{draft_year}}</td>
+            <td class="pad">{{#if draft-1}}{{> stat draft-1}}{{/if}}</td>
+            <td class="pad">{{#if draft}}{{> stat draft}}{{/if}}</td>
+            <td class="pad">{{#if draft1}}{{> stat draft1}}{{/if}}</td>
+            <td class="pad">{{#if draft2}}{{> stat draft2}}{{/if}}</td>
+            <td class="pad">{{#if draft3}}{{> stat draft3}}{{/if}}</td>
+            <td class="pad">{{#if draft4}}{{> stat draft4}}{{/if}}</td>
+            <td><a href="/delete/{{id}}">delete</a></td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
