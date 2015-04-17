@@ -215,7 +215,7 @@ function getTeamGGG(data, done){
             match = p.exec(content);
 
             if(!match || match.length < 5){
-                return done("could not get team stats from " + stat.team_url);
+                return done(data.name, " - could not get team stats from " + stat.team_url);
             }
 
             var gp = {
