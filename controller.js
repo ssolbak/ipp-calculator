@@ -90,6 +90,7 @@ exports.regenerateData = function(req, res){
 
         async.map(data, function(record, cb){
 
+            console.log("regen", record.name);
             processPlayer(record.id, function(err, player){
                 cb(err, player);
             });
