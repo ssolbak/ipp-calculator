@@ -131,7 +131,7 @@ function parsePlayerData(id, content, done){
     async.waterfall(
         [
             function(cb){
-                getVal({id:id}, 'name', /<h1 itemprop="name" class="title">([\w\s]+)<\/h1>/, content, cb);
+                getVal({id:id}, 'name', /<h1 itemprop="name" class="title">([^<]+)<\/h1>/, content, cb);
             },
             function(data, cb){
                 getVal(data, 'draft_year', /<a href="\/ihdb\/draft\/nhl([0-9]+)e.html"/, content, cb);
