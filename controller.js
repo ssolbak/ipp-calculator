@@ -2,6 +2,15 @@ var _ = require('lodash');
 var async = require("async");
 var fs = require("fs");
 
+// constants
+var gp = {
+    'OHL' : 68,
+    'WHL' : 72,
+    'QMJH' : 68,
+    'NHL' : 82,
+    'AHL' : 73.5 // sometimes 73, some 74
+};
+
 exports.show = function (req, res) {
     getIPPData(function (err, data) {
         res.render("results", {msg: err, data: data});
@@ -215,21 +224,34 @@ function getTeamGGG(data, done){
             match = p.exec(content);
 
             if(!match || match.length < 5){
-                return done(data.name, " - could not get team stats from " + stat.team_url);
+
+                // sometimes site doesnt have totals....
+                var playerTeam = /<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?/g;
+
+                stat.team_goals = 0;
+                stat.team_assists = 0;
+                stat.team_points = 0;
+                stat.team_pims = 0;
+
+                var matches;
+                while ((matches = playerTeam.exec(content)) !== null) {
+                    if (matches && matches.length > 4) {
+                        stat.team_goals += parseInt(matches[2]);
+                        stat.team_assists += parseInt(matches[3]);
+                        stat.team_points += parseInt(matches[4]);
+                        stat.team_pims += parseInt(matches[5]);
+                    }
+                }
+
+                if(stat.team_goals == 0){
+                    return done(data.name + " - could not get team stats from " + stat.team_url);
+                }
+            }else{
+                stat.team_goals = parseInt(match[1]);
+                stat.team_assists = parseInt(match[2]);
+                stat.team_points = parseInt(match[3]);
+                stat.team_pims = parseInt(match[4]);
             }
-
-            var gp = {
-                'OHL' : 68,
-                'WHL' : 72,
-                'QMJH' : 68,
-                'NHL' : 82,
-                'AHL' : 73.5 // sometimes 73, some 74
-            };
-
-            stat.team_goals = parseInt(match[1]);
-            stat.team_assists = parseInt(match[2]);
-            stat.team_points = parseInt(match[3]);
-            stat.team_pims = parseInt(match[4]);
 
             if(gp[stat.team_league.toUpperCase()]){
                 stat.team_ggg = stat.team_goals/gp[stat.team_league.toUpperCase()];
