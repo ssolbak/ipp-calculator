@@ -205,6 +205,11 @@ function getTeamGGG(data, done){
 
         downloadFile(stat.team_url, fileName, function(err, content){
 
+            if(err) {
+                console.log("could not download team page for", data.name, stat.team_url);
+                return cb(err);
+            }
+
             var p = /<td[^>]*>Totals<\/td>\s<td><\/td>\s<td>([0-9]+)<\/td>\s<td>([0-9]+)<\/td>\s<td>([0-9]+)<\/td>\s<td>([0-9]+)<\/td>/;
 
             match = p.exec(content);
