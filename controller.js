@@ -146,7 +146,10 @@ function parsePlayerData(id, content, done){
                 getVal({id:id}, 'name', /<h1 itemprop="name" class="title">([^<]+)<\/h1>/, content, cb);
             },
             function(data, cb){
-                getVal(data, 'draft_year', /<a href="\/ihdb\/draft\/nhl([0-9]+)e.html"/, content, cb);
+                getVal(data, 'draft_year', /<a href="\/ihdb\/draft\/nhl([0-9]+)e.html"/, content, function(err){
+                    if(err) data.draft_year = 2015; // hack, fix this
+                    cb();
+                });
             },
             function(data, cb){
 
