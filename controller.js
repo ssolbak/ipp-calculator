@@ -13,6 +13,7 @@ var gp = {
 
 exports.show = function (req, res) {
     getIPPData(function (err, data) {
+        data = _.sortBy(data, "draft_year");
         res.render("results", {msg: err, data: data});
     });
 };
