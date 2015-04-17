@@ -139,7 +139,7 @@ function parsePlayerData(id, content, done){
             function(data, cb){
 
                 data.stats = [];
-                var statsPattern = /<td[^>]*>([0-9]{4}-[0-9]+)<\/td>\s.*<a href="([^"]*)">([\w\s\-\.]+)<\/a><\/td>\s<td[^>]*>([A-Za-z\-\.]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s/g;
+                var statsPattern = /<td[^>]*>([0-9]{4}-[0-9]+)<\/td>\s.*<a href="([^"]*)">([^<]+)<\/a><\/td>\s<td[^>]*>([^<]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s/g;
 
                 var matches;
                 while((matches = statsPattern.exec(content)) !== null){
