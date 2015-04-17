@@ -147,8 +147,8 @@ function parsePlayerData(id, content, done){
             },
             function(data, cb){
                 getVal(data, 'draft_year', /<a href="\/ihdb\/draft\/nhl([0-9]+)e.html"/, content, function(err){
-                    if(err) data.draft_year = 2015; // hack, fix this
-                    cb();
+                    if(err) data.draft_year = "2015-16"; // hack, fix this
+                    cb(null, data);
                 });
             },
             function(data, cb){
