@@ -7,6 +7,10 @@ var gp = {
     'OHL' : 68,
     'WHL' : 72,
     'QMJH' : 68,
+    'QMJHL' : 68,
+    'H-EAST' : 38,
+    'USHL' : 26,
+    'SweHL' : 52,
     'NHL' : 82,
     'AHL' : 73.5 // sometimes 73, some 74
 };
@@ -42,7 +46,7 @@ exports.addPlayer = function(req, res) {
     getIPPData(function(err, data){
 
         if(_.find(data, function(x){
-                return x.id == id;
+                return x.id === id;
             })){
             res.render("results", { data: data, msg: "Player already exists"});
         }else{
@@ -76,7 +80,7 @@ exports.removePlayer = function(req, res) {
             return x.id == req.params.playerId;
         });
 
-        if (data.length == before) {
+        if (data.length === before) {
             return res.render("error", {msg: "player " + req.params.playerId + " doesnt exist"});
         } else {
             var contents = JSON.stringify(data);
@@ -144,22 +148,29 @@ function parsePlayerData(id, content, done){
     async.waterfall(
         [
             function(cb){
+                console.log("Get Player Name");
                 getVal({id:id}, 'name', /<h1 itemprop="name" class="title">([^<]+)<\/h1>/, content, cb);
             },
             function(data, cb){
+                console.log("Get draft year");
                 getVal(data, 'draft_year', /<a href="\/ihdb\/draft\/nhl([0-9]+)e.html"/, content, function(err){
-                    if(err) data.draft_year = "2015-16"; // hack, fix this
+                    if(err) {
+                        // hack, fix this
+                        console.error(err, "defaulting to 2017-18");
+                        data.draft_year = "2017-18";
+                    }
                     cb(null, data);
                 });
             },
             function(data, cb){
 
                 data.stats = [];
-                var statsPattern = /<td[^>]*>([0-9]{4}-[0-9]+)<\/td>\s.*<a href="([^"]*)">([^<]+)<\/a><\/td>\s<td[^>]*>([^<]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s/g;
+                var statsPattern = /<td[^>]*>([0-9]{4}-[0-9]+)<\/td>\s.*<a href="([^"]*)">([^<]+)<\/a><\/td>\s<td[^>]*>([^<]*)<\/td>\s<td[^>]*>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s<td>([0-9]*)<\/td>\s/g;
 
                 var matches;
                 while((matches = statsPattern.exec(content)) !== null){
 
+                    console.log("Get player stats");
                     if(!matches || matches.length < 8){
                         return cb("could not get player stats");
                     }
@@ -200,7 +211,8 @@ function getVal(data, key, pattern, text, done){
     console.log(key, matches[1]);
     data[key] = matches[1];
 
-    done(null, data);
+    console.log(data);
+    return done(null, data);
 }
 
 function getTeamGGG(data, done){
@@ -216,6 +228,7 @@ function getTeamGGG(data, done){
         var key = match[1]; // get from url
         var fileName = __dirname + "/.data/teams/" + key + ".html";
 
+        console.log("downloading team url", stat.team_url);
         downloadFile(stat.team_url, fileName, function(err, content){
 
             if(err) {
@@ -247,10 +260,10 @@ function getTeamGGG(data, done){
                     }
                 }
 
-                if(stat.team_goals == 0){
+                if(stat.team_goals === 0){
                     return done(data.name + " - could not get team stats from " + stat.team_url);
                 }
-            }else{
+            } else {
                 stat.team_goals = parseInt(match[1]);
                 stat.team_assists = parseInt(match[2]);
                 stat.team_points = parseInt(match[3]);
@@ -262,7 +275,7 @@ function getTeamGGG(data, done){
                 stat.ipp = stat.points / (stat.team_ggg * stat.games_played);
             } else {
 
-                var playerTeam = /<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?<td>([0-9]+)<\/td>\s?/g;
+                var playerTeam = /<td[^>]*>([0-9]+)<\/td>\s?<td[^>]*>([0-9]+)<\/td>\s?<td[^>]*>([0-9]+)<\/td>\s?<td[^>]*>([0-9]+)<\/td>\s?<td[^>]*>([0-9]+)<\/td>\s?/g;
 
                 var maxGP = 0;
                 var matches;
